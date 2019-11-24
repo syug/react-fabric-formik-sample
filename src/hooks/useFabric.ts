@@ -27,9 +27,15 @@ interface PolygonOpt {
  * useFabric
  * @param id: string
  */
-const useFabric = ({ id }) => {
+interface useFabricOptions {
+  id: string;
+  objects?: RectOpt[];
+}
+
+const useFabric = ({ id, objects }: useFabricOptions) => {
   const canvasRef = React.useRef(null);
   const [someObjectIsSelected, setSomeObjectIsSelected] = React.useState(false);
+  // const [objects, setObjects] = React.useState(undefined);
 
   /**
    * Initialize
@@ -105,6 +111,17 @@ const useFabric = ({ id }) => {
     const objects = canvasRef.current.getObjects();
     removeObjects(objects);
   }, [removeObjects]);
+
+  /**
+   * Bindings
+   */
+  React.useEffect(() => {
+    console.log("objects", objects);
+    if (objects && objects.length > 0) {
+      removeAll();
+      objects.forEach(object => addRect(object));
+    }
+  }, [objects, removeAll, addRect]);
 
   return {
     canvasRef,

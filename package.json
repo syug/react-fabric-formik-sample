@@ -9,6 +9,7 @@
     "@types/fabric": "3.4.1",
     "fabric": "3.5.1-browser",
     "formik": "2.0.6",
+    "prettier": "1.19.1",
     "react": "16.8.4",
     "react-dom": "16.8.4",
     "react-scripts": "2.1.3"

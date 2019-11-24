@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Box, Button, Grid } from "@material-ui/core";
+import { useField, useFormikContext } from "formik";
 import useFabric from "../hooks/useFabric";
 
 const ContainedButton = props => (
@@ -8,14 +9,37 @@ const ContainedButton = props => (
   </Button>
 );
 
-const Canvas = ({ id }) => {
+interface CanvasProps {
+  id: string;
+  name: string;
+}
+const Canvas = ({ id, name }: CanvasProps) => {
+  const { setFieldValue } = useFormikContext();
+  const [field] = useField(name);
   const {
     addRect,
     addPolygon,
     someObjectIsSelected,
     removeSelection,
     removeAll
-  } = useFabric({ id });
+  } = useFabric({ id, objects: field.value });
+
+  const handleAddRandomObject = React.useCallback(
+    e => {
+      const newValue = [
+        ...field.value,
+        {
+          left: Number(Math.random() * 200),
+          top: Number(Math.random() * 200),
+          fill: "green",
+          width: Number(Math.random() * 30),
+          height: Number(Math.random() * 30)
+        }
+      ];
+      setFieldValue(name as never, newValue);
+    },
+    [field.value, name, setFieldValue]
+  );
 
   const handleAddRect = React.useCallback(
     e => {
@@ -61,6 +85,12 @@ const Canvas = ({ id }) => {
         </Box>
       </Grid>
       <Grid container item spacing={1}>
+        <Grid item>
+          <ContainedButton color="secondary" onClick={handleAddRandomObject}>
+            Add randam object
+          </ContainedButton>
+        </Grid>
+
         <Grid item>
           <ContainedButton onClick={handleAddRect}>Add rect</ContainedButton>
         </Grid>
